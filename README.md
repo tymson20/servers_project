@@ -1,1 +1,1 @@
-# servers_project
+Tworzymy serwery dla klientów sklepu.
