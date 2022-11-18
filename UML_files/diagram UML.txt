@@ -1,0 +1,44 @@
+@startuml
+class Product {
+ + __init__(name: str, price: float): None
+ + __eq__(other: Product): bool
+ + __hash__(): 
+ - name: str
+ - price: float
+}
+
+abstract class Server {
+ + {abstract} __init__(products: List[Product]): None
+ + {abstract} get_entries(n_letters: int): List[Product]
+ + {static} n_max_returned_entries: int
+ - {abstract} products: Union[List[Product], Dict[str: Product]]
+}
+
+class ListServer {
+ + __init__(products: List[Product]): None
+ + get_entries(n_letters: int): List[Product]
+ - products: List[Product]
+}
+
+class DictServer {
+ + __init__(products: List[Product]): None
+ + get_entries(n_letters: int): List[Product]
+ - products: Dict[str: Product]
+}
+
+class Client {
+ + __init__(server: Server): None
+ + get_total_price(n_letters: Optional[int]): Optional[float]
+ - server: Server
+}
+
+
+ListServer "1" *-- "*" Product
+DictServer "1" *-- "*" Product
+Server <|-- ListServer
+Server <|-- DictServer
+Client "*" o-- "1" Server
+Server ..> TooManyProductsFoundError : << uses >>
+Product ..> ValueError : << uses >>
+
+@enduml
