@@ -8,6 +8,9 @@ from re import fullmatch
 
 class Product:
     def __init__(self, name: str, price: float) -> None:
+        match = re.fullmatch(r"[a-zA-Z]+[0-9]+", name)
+        if match is None:
+            raise ValueError("Incorrect name of product")
         self.name: str = name
         self.price: float = price
 
@@ -36,11 +39,15 @@ class Server(ABC):
         products = self.get_products()
         result = []
         for el in products:
-            if el.name == re.fullmatch(r"[a-zA-Z]{"+str(n_letters)+"}[0-9]{2,3}"):
+            match = re.fullmatch(r"[a-zA-Z]{"+str(n_letters)+r"}[0-9]{2,3}", el.name)
+            if match is not None:
                 result.append(el)
+            else:
+                raise ValueError
         if len(result) > Server.n_max_returned_entries:
             raise TooManyProductsFoundError
-        return result.sort(key=lambda x: x.price)
+        result.sort(key=lambda x: x.price)
+        return result
 
     @abstractmethod
     def get_products(self) -> List[Product]:
