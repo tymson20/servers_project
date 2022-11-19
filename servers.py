@@ -32,15 +32,15 @@ class TooManyProductsFoundError:
 class Server(ABC):
     n_max_returned_entries: int = 3
 
-    def get_entries(self, n_letters: int = 1):
+    def get_entries(self, n_letters: int = 1) -> List[Product]:
         products = self.get_products()
         result = []
         for el in products:
             if el.name == re.fullmatch(r"[a-zA-Z]{"+str(n_letters)+"}[0-9]{2,3}"):
                 result.append(el)
-
+        if len(result) > Server.n_max_returned_entries:
+            raise TooManyProductsFoundError
         return result.sort(key=lambda x: x.price)
-
 
     @abstractmethod
     def get_products(self) -> List[Product]:
