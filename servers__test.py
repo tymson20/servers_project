@@ -6,6 +6,27 @@ from servers import ListServer, Product, Client, MapServer
 server_types = (ListServer, MapServer)
 
 
+class ProductTest(unittest.TestCase):
+
+    def test_product_has_correct_name(self):
+        products = [Product("a2", 1.0), Product("Ab11", 0.0)]
+        self.assertEqual(products[0].name, "a2")
+        self.assertEqual(products[1].name, "Ab11")
+
+    def test_product_has_incorrect_name(self):
+        incorrect_names = ("1b", "11", "A")
+        for name in incorrect_names:
+            with self.assertRaises(ValueError) as context:
+                product = Product(name, 0.0)
+
+                self.assertTrue("Incorrect name of product" in context.exception)
+
+    def test_products_are_equal(self):
+        product1 = Product("a1", 1.2)
+        product2 = Product("a1", 1.2)
+        self.assertTrue(product1.__eq__(product2))
+
+
 class ServerTest(unittest.TestCase):
 
     def test_get_entries_returns_proper_entries(self):
