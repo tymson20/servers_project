@@ -42,8 +42,6 @@ class Server(ABC):
             match = fullmatch(r"[a-zA-Z]{"+str(n_letters)+r"}[0-9]{2,3}", el.name)
             if match is not None:
                 result.append(el)
-            else:
-                raise ValueError
         if len(result) > Server.n_max_returned_entries:
             raise TooManyProductsFoundError
         result.sort(key=lambda x: x.price)
