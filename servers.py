@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import re
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict,TypeVar
 from abc import ABC, abstractmethod
 from re import fullmatch
 
@@ -68,10 +68,16 @@ class MapServer(Server):
         return list(self.products.values())
 
 
+ServerType = TypeVar('ServerType', bound=Server) # reprezentacja obiektu
 class Client:
     # FIXME: klasa powinna posiadać metodę inicjalizacyjną przyjmującą obiekt reprezentujący serwer
-    def __init__(self, server: Server) -> None:
-        pass
+    def __init__(self, server: ServerType) -> None:
+        self.server: ServerType = server
 
     def get_total_price(self, n_letters: Optional[int]) -> Optional[float]:
-        raise NotImplementedError()
+        try:
+            entires = self.server.get_entries() if n_letters is None \
+                else self.server.get_entries(n_letters)
+            return sum([entry.price for entry in entires])
+        except TooManyProductsFoundError:
+            return 0
