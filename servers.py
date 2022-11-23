@@ -76,8 +76,14 @@ class Client:
 
     def get_total_price(self, n_letters: Optional[int]) -> Optional[float]:
         try:
-            entires = self.server.get_entries() if n_letters is None \
-                else self.server.get_entries(n_letters)
-            return sum([entry.price for entry in entires])
+            entries = []
+            if n_letters is None:
+                entries = self.server.get_entries()
+            if isinstance(n_letters,int):
+                entries = self.server.get_entries(n_letters)
+            if not entries:
+                return None
+            return sum([entry.price for entry in entries])
         except TooManyProductsFoundError:
-            return 0
+            return None
+
